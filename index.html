@@ -1,0 +1,123 @@
+<!doctype html>
+<html>
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+   <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
+	<link rel="stylesheet" href="jqueryMobile/jquery.mobile.custom.structure.css" />
+	<link rel="stylesheet" href="jqueryMobile/my-custom-theme.css" />
+	<link rel="stylesheet" href="jqueryMobile/jquery.mobile.icons.min.css" />
+	
+	<script type="text/javascript" src="./jquery/jquery-1.9.1.min.js"></script>
+	<script type="text/javascript" src="./jqueryMobile/jquery.mobile.custom.js"></script>
+	<script type="text/javascript" src="./jquery/bootstrap.min.js"></script>
+
+    <title>barcode</title>
+  </head>
+<style type="text/css">
+@font-face {
+  font-family: 'barCodeFont';
+  font-style: normal;
+  font-weight: 400;
+  src:  url(./font/sJoa3KhViNKANw_E3LwoDXvs5Un0HQ1vT-0H0h5K.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+
+</style>
+
+<script type="text/javascript">
+$(document).ready(function() {
+	$('#goButtn').hide();
+    $('#phoneNo').keyup(function() {
+    	var pn = $("#phoneNo").val().trim();
+    	if (8 == pn.length) {
+    		$('#goButtn').show();
+    		
+    	}else {
+    		$('#goButtn').hide();
+    	}
+        
+    });
+    
+});
+function getBarCode() {
+	
+	$("#error").text("");
+	$("#barCode1").text("");
+	$("#barCode2").text("");
+	$("#barCode3").text("");
+	$.mobile.loading( 'show', {
+		text: 'loading',
+		textVisible: true,
+		theme: 'z',
+		html: ""
+	});
+	$.ajax({
+		url : "getBarCode.do",
+		type : 'GET', //使用POST
+		async : 'false', //要多加這一個 By 1.4.2 Jquery
+		data : {
+			"phoneNo":$("#phoneNo").val()
+			},
+		dataType : 'json',
+		success : function(data) {
+		$.mobile.loading( 'hide');
+			if (null  ==  data.barCode1 || "" ==  data.barCode1) {
+				$("#error").text("Sorry!!")
+			} else {
+				$("#barCode1").text(data.barCode1);
+				$("#barCode2").text(data.barCode2);
+				$("#barCode3").text(data.barCode3);
+				$('#goButtn').hide();
+				$("#phoneNo").attr('disabled','disabled');
+			}
+			
+			
+			
+		},
+	error : function(xhr, textStatus, thrownError) {
+		
+
+		}
+	});
+}
+
+	
+</script>
+
+<body>
+
+<div class="container">
+ <div class="row" >
+  <div class="row" style="margin:15% 0 0 0" align="center">
+      <div class="col-xs-3 col-sm-3" style="margin:2% 0 0 0%"align="right">09</div>
+	  <div class="col-xs-6 col-sm-6" style="margin:-2% 0 0 -4%"><input type="text" id="phoneNo" onkeyup="value=value.replace(/[^\d]/g,'') " maxlength="8" ></div>
+	  <div class="col-xs-3 col-sm-3" style="margin:-1% 0 0 -10%"><a href="#" id="goButtn" data-role="button" data-icon="check" data-iconpos="notext" data-theme="c" data-inline="true" onclick="javascript:getBarCode()"></a></div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 col-sm-12"  id="error" align="center"></div>
+  </div>
+  <div class="row">
+	  <div class="row" style="margin:8% 0% 0 0%" align="center">
+	    <div class="col-xs-12 col-sm-12" style="font-family: barCodeFont;font-size: 250%" id="barCode1"></div>
+	  </div>
+	  <div class="row"  style="margin:8% 0% 0 0%" align="center">
+	    <div class="col-xs-12 col-sm-12" style="font-family: barCodeFont;font-size: 250%" id="barCode2"></div>
+	  </div>
+	  <div class="row" style="margin:8% 0% 0 0%" align="center">
+	    <div class="col-xs-12 col-sm-12" style="font-family: barCodeFont;font-size: 250%" id="barCode3"></div>
+	  </div>
+  </div>
+  
+   <div class="row" style="height:30%">
+    <div class="col-xs" ></div>
+  </div>
+  </div>
+</div>
+
+</body>
+</html>
